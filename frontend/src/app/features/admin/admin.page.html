@@ -1,0 +1,17 @@
+@if (!session.token()) {
+<yb-admin-login (loggedIn)="open()" />
+} @else if (ready()) {
+<div class="container page"><div class="row between wrap" style="margin-bottom:16px"><div><h1 style="font-size:28px;margin:0">Operator console</h1><p class="muted small" style="margin:0">Demo admin · data stored in data.json</p></div><div class="row"><button class="btn btn-sm btn-outline" id="reset" (click)="askReset()">Reset demo data</button><button class="btn btn-sm btn-ghost" id="logout" (click)="logout()">Log out</button></div></div>
+<div class="admin"><nav class="card side" aria-label="Admin sections">@for (t of tabs; track t[0]) {<button [attr.data-at]="t[0]" [attr.aria-current]="t[0] === tab ? 'page' : null" (click)="go(t[0])"><svg [ybIcon]="t[2]"></svg>{{ t[1] }}</button>}</nav><section id="apanel" aria-live="polite">
+  @switch (tab) {
+    @case ('dashboard') { @defer (on immediate) {<yb-admin-dashboard />} @placeholder {<div class="skeleton" style="height:300px"></div>} }
+    @case ('bookings') { @defer (on immediate) {<yb-admin-bookings [query]="q['q'] || ''" />} @placeholder {<div class="skeleton" style="height:300px"></div>} }
+    @case ('occupancy') { @defer (on immediate) {<yb-admin-occupancy [scheduleId]="q['sid'] || ''" [date]="q['date'] || ''" />} @placeholder {<div class="skeleton" style="height:300px"></div>} }
+    @default { @defer (on immediate) {<yb-admin-catalog [collection]="collection" />} @placeholder {<div class="skeleton" style="height:300px"></div>} }
+  }
+</section></div></div>
+} @else if (error()) {
+<div class="container page"><div class="card empty"><div class="art-ic"><svg ybIcon="alert"></svg></div><h3>Something went wrong</h3><p>{{ error() }}</p><a class="btn btn-primary" href="#/">Back to home</a></div></div>
+}
+<ng-template #resetBody><p>This deletes all bookings and restores the original buses, routes, schedules and coupons.</p></ng-template>
+<ng-template #resetFoot><button class="btn btn-outline" data-close>Cancel</button><button class="btn btn-primary" id="doreset" (click)="doReset()">Reset</button></ng-template>

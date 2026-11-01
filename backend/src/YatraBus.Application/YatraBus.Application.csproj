@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>YatraBus.Application</RootNamespace></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YatraBus.Domain\YatraBus.Domain.csproj" />
+    <!-- DbSet<T>/async LINQ in IAppDbContext (provider-agnostic; SQLite lives in Infrastructure) -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.31" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+  </ItemGroup>
+</Project>

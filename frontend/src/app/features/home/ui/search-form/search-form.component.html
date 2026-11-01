@@ -1,0 +1,21 @@
+<ng-container [formGroup]="form">
+<div class="row between wrap" style="margin-bottom:14px">
+  <div class="trip-toggle" role="group" aria-label="Trip type">
+    <button type="button" data-trip="oneway" [attr.aria-pressed]="!round()" (click)="setRound(false)">One way</button>
+    <button type="button" data-trip="round" [attr.aria-pressed]="round()" (click)="setRound(true)">Round trip</button>
+  </div>
+  <span class="tiny muted row" style="gap:6px"><svg ybIcon="lock"></svg> Free cancellation up to 48h · 90% refund</span>
+</div>
+<div class="search-grid" [class.oneway]="!round()" id="sg">
+  <div class="field sf"><label for="from">From</label><span class="sf-ic"><svg ybIcon="pin"></svg></span><select class="input" id="from" formControlName="from">@for (c of cities(); track c) {<option [value]="c">{{ c }}</option>}</select></div>
+  <button type="button" class="swap" id="swap" #swapBtn aria-label="Swap origin and destination" (click)="swap()"><svg ybIcon="swap"></svg></button>
+  <div class="field sf"><label for="to">To</label><span class="sf-ic"><svg ybIcon="flag"></svg></span><select class="input" id="to" formControlName="to">@for (c of cities(); track c) {<option [value]="c">{{ c }}</option>}</select></div>
+  <div class="field sf field-date"><label for="date">Departure</label><span class="sf-ic"><svg ybIcon="cal"></svg></span><input class="input" type="date" id="date" #dateEl [min]="today" [max]="maxDate" formControlName="date" (change)="dateChanged(dateEl.value)" required></div>
+  <div class="field sf field-ret" [hidden]="!round()"><label for="ret">Return</label><span class="sf-ic"><svg ybIcon="cal"></svg></span><input class="input" type="date" id="ret" #retEl [min]="retMin()" [max]="maxRet" formControlName="ret"></div>
+  <div class="go"><button class="btn btn-primary btn-lg btn-block" type="submit"><svg ybIcon="search"></svg> Search buses</button></div>
+</div>
+<div class="quick-dates" role="group" aria-label="Quick dates">
+  @for (q of quick; track q.d) {<button type="button" class="chip" [class.on]="q.d === date()" [attr.data-date]="q.d" (click)="dateChanged(q.d)">{{ q.label }}</button>}
+</div>
+<p class="err-text" id="search-err" role="alert">{{ error() }}</p>
+</ng-container>

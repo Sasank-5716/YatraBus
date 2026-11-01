@@ -1,0 +1,20 @@
+<div class="decks">
+  @for (d of decks(); track d.name; let di = $index) {
+    <div class="deck" [attr.aria-label]="d.name">
+      <div class="deck-head"><span>{{ d.name }}</span>@if (di === 0) {<svg ybIcon="wheel"></svg>} @else {<span></span>}</div>
+      <div class="seat-grid" [style.grid-template-columns]="d.cols">
+        @for (s of d.cells; track $index) {
+          @if (!s) {<span class="gap" aria-hidden="true"></span>}
+          @else {
+            @let st = state(s);
+            <button type="button" class="seat" [class.berth]="s.kind === 'berth'" [class.ladies]="s.ladies" [class.booked]="st.isB" [class.held]="st.isH" [class.sel]="st.isS"
+              [attr.data-seat]="s.id" [attr.data-price]="s.price" [attr.data-ladies]="s.ladies ? 1 : 0"
+              [disabled]="(st.isB || st.isH) && interactive()" [attr.aria-pressed]="interactive() ? st.isS : null" [attr.tabindex]="interactive() ? null : -1"
+              [attr.aria-label]="st.tip" [attr.title]="st.tip" (click)="click(s, $event)">{{ s.id }}<small>{{ st.small }}</small></button>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>
+<div class="legend"><span><i></i>Available</span><span><i class="l-sel"></i>Selected</span><span><i class="l-booked"></i>Booked</span><span><i class="l-held"></i>On hold</span><span><i class="l-ladies"></i>Ladies</span></div>

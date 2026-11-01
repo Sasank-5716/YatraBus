@@ -1,0 +1,20 @@
+@if (trip(); as t) {
+<div class="route-bar"><div class="container"><div class="row between wrap"><div><h1>{{ t.operator.name }}</h1><div class="muted small">{{ t.from }} → {{ t.to }} · {{ q['date'] | fmtDate }} · {{ t.departure }} – {{ t.arrival }} · {{ t.bus.type }}</div></div><div class="steps" aria-label="Booking progress" ybSteps [active]="leg" [round]="round"></div></div></div></div>
+<div class="container page">
+  <p><a [href]="backLink(t)"><svg ybIcon="arrowL"></svg> Back to all buses</a></p>
+  <div class="seat-wrap">
+    <div class="card"><div class="row between wrap" style="margin-bottom:12px"><h2 style="margin:0">Select your {{ t.bus.layout === 'sleeper' ? 'berths' : 'seats' }}</h2><span class="muted small">{{ need ? 'Pick ' + need + ' seat' + (need > 1 ? 's' : '') + ' to match your outbound trip' : 'Up to 6 per booking' }}</span></div><div id="map"><yb-seat-map [layout]="t.layout" [selected]="sel()" [booked]="t.booked" [held]="t.held" (toggle)="toggleSeat($event)" /></div></div>
+    <aside class="card summary" aria-label="Selection summary">
+      <div class="tabs-inline" role="tablist"><button role="tab" [attr.aria-selected]="tab() === 'b'" data-tab="b" (click)="tab.set('b')">Boarding</button><button role="tab" [attr.aria-selected]="tab() === 'd'" data-tab="d" (click)="tab.set('d')">Dropping</button></div>
+      <div class="pt-list" id="pts">@for (p of points(); track p.name) {<label class="pt"><input type="radio" name="pt" [value]="p.name" [checked]="p.name === (tab() === 'b' ? bp() : dp())" (change)="pickPoint(p.name)"><span><b>{{ p.time }}</b> · {{ p.name }}<br><span class="muted">{{ tab() === 'b' ? t.from : t.to }}</span></span></label>}</div>
+      <div style="margin-top:16px"><div class="label">Selected</div><div id="selbox" class="small" style="margin:6px 0 10px">@if (sel().length) {@for (s of sel(); track s) {@if (!$first) {&ngsp;}<span class="badge green">{{ s }} · {{ priceOf(s) | npr }}</span>}<div class="muted tiny" style="margin-top:8px"><svg ybIcon="flag"></svg> {{ bp() }} <svg ybIcon="arrow"></svg>&ngsp;<svg ybIcon="pin"></svg> {{ dp() }}</div>} @else {<span class="muted">No seats selected yet</span>}</div>
+      <div class="kv total"><span>Fare</span><span id="tot">{{ total() | npr }}</span></div><p class="tiny muted">Taxes &amp; service charge shown at checkout.</p>
+      <button class="btn btn-primary btn-block btn-lg" id="cont" [disabled]="busy() || !canContinue()" (click)="continue()">@if (busy()) {<span class="spinner"></span> Holding seats…} @else {<ng-container>{{ contLabel() }}</ng-container>}</button></div>
+    </aside>
+  </div>
+</div>
+} @else if (error()) {
+<div class="container page"><div class="card empty" ybEmpty icon="alert"><h3>Something went wrong</h3><p>{{ error() }}</p><a class="btn btn-primary" href="#/">Back to home</a></div></div>
+} @else {
+<div class="container page"><div class="skeleton sk-card"></div><div class="skeleton" style="height:420px"></div></div>
+}

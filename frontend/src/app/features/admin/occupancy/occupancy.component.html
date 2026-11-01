@@ -1,0 +1,9 @@
+<div class="card" [formGroup]="form"><div class="toolbar"><div class="field grow"><label for="os">Trip</label><select class="input" id="os" formControlName="sid">@for (s of schedules(); track s.id) {<option [value]="s.id">{{ s.label }}</option>}</select></div>
+<div class="field"><label for="od">Date</label><input class="input" type="date" id="od" formControlName="date"></div></div><div id="ocb">
+@if (trip(); as t) {
+  @let k = kpi()!;
+  <div class="grid g4" style="margin-bottom:16px"><div class="stat card"><div class="label">Occupancy</div><div class="v">{{ k.pct }}%</div><div class="hbar"><i [style.width.%]="k.pct"></i></div></div><div class="stat card"><div class="label">Booked</div><div class="v">{{ k.sold }}/{{ t.totalSeats }}</div></div><div class="stat card"><div class="label">On hold</div><div class="v">{{ t.held.length }}</div></div><div class="stat card"><div class="label">Available</div><div class="v">{{ t.seatsLeft }}</div></div></div>
+  <yb-seat-map [layout]="t.layout" [booked]="t.booked" [held]="t.held" [info]="t.seatInfo" [interactive]="false" />
+  <h3 style="margin-top:20px">Passenger manifest</h3>@if (k.manifest.length) {<div class="table-wrap"><table><thead><tr><th>Seat</th><th>Passenger</th><th>Age/Gender</th><th>Phone</th><th>Boarding</th><th>Ticket</th></tr></thead><tbody>@for (m of k.manifest; track m[0]) {<tr><td><b>{{ m[0] }}</b></td><td>{{ m[1].name }}</td><td>{{ m[1].age }} / {{ m[1].gender | gender }}</td><td>{{ m[1].phone }}</td><td>{{ m[1].boarding }}</td><td>{{ m[1].id }}</td></tr>}</tbody></table></div>} @else {<p class="muted">No passengers booked on this trip yet.</p>}
+} @else {<div class="skeleton" style="height:300px"></div>}
+</div></div>

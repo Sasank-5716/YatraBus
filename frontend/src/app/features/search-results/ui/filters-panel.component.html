@@ -1,0 +1,7 @@
+<div class="row between"><h3 style="margin:0">Filters</h3><button class="btn btn-sm btn-ghost" id="fclear" (click)="s.clear()">Clear all</button></div>
+<h4>Bus type</h4>@for (t of types; track t) {<label class="check"><input type="checkbox" data-f="types" [value]="t" [checked]="s.types().has(t)" (change)="check('types', $event)">{{ t }}<span class="count">{{ s.typeCount(t) }}</span></label>}
+<h4>Departure time</h4><div class="slots">@for (sl of slots; track sl[0]) {<button type="button" class="slot" [attr.data-slot]="sl[0]" [attr.aria-pressed]="s.slots().has(sl[0])" (click)="slot(sl[0])">{{ sl[1] }}<span>{{ s.slotCount(sl) }}</span></button>}</div>
+<h4><label for="pmax">Max price: <span id="pv">{{ s.max() | npr }}</span></label></h4><input type="range" id="pmax" [min]="s.minPrice()" [max]="s.maxPrice()" step="50" [value]="s.max()" (input)="price($event)">
+<h4>Amenities</h4>@for (a of amenities; track a[0]) {<label class="check"><input type="checkbox" data-f="amen" [value]="a[0]" [checked]="s.amen().has(a[0])" (change)="check('amen', $event)">{{ a[1] }}</label>}
+<h4>Operators</h4>@for (o of s.operators(); track o) {<label class="check"><input type="checkbox" data-f="ops" [value]="o" [checked]="s.ops().has(o)" (change)="check('ops', $event)">{{ o }}<span class="count">{{ s.opCount(o) }}</span></label>}
+<button class="btn btn-dark btn-block filter-toggle" style="margin-top:16px" id="fdone" (click)="done.emit()">Show results</button>

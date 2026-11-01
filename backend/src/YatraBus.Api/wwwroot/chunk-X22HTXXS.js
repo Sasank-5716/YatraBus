@@ -1,0 +1,1 @@
+import{e as o}from"./chunk-HGBJ3B4W.js";import{O as e}from"./chunk-AMIM7SBL.js";function c(){let t=e(o).snapshot.queryParamMap;return Object.fromEntries(t.keys.map(r=>[r,t.get(r)??""]))}export{c as a};

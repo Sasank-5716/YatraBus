@@ -1,0 +1,26 @@
+<div class="container page" style="max-width:960px">
+  <h1 style="font-size:30px">Manage your booking</h1><p class="muted">View, print or cancel a ticket using your ticket ID and/or mobile number.</p>
+  <form class="card" id="lf" novalidate [formGroup]="form" (submit)="submit($event)"><div class="grid g3" style="align-items:end"><div class="field"><label for="lid">Ticket ID</label><input class="input" id="lid" placeholder="e.g. YB4F9A2C" formControlName="id" style="text-transform:uppercase"></div>
+  <div class="field"><label for="lph">Mobile number</label><input class="input" id="lph" type="tel" inputmode="numeric" maxlength="10" placeholder="98XXXXXXXX" formControlName="phone"></div>
+  <button class="btn btn-primary btn-lg">Find booking</button></div><p class="err-text" id="lerr">{{ formError() }}</p></form>
+  <div class="card" style="margin-top:16px"><h3>Cancellation &amp; refund policy</h3><div class="table-wrap"><table><thead><tr><th>Time before departure</th><th>Refund</th></tr></thead><tbody>@for (p of policy; track p[0]) {<tr><td>{{ p[0] }}</td><td><b>{{ p[1] }}</b></td></tr>}<tr><td>Less than 6 hours</td><td>Not cancellable</td></tr></tbody></table></div><p class="tiny muted" style="margin-top:8px">Refund is calculated on the total paid. In this demo refunds are simulated.</p></div>
+  <div id="lr" style="margin-top:20px">
+    @switch (status()) {
+      @case ('loading') {<div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>}
+      @case ('error') {<div class="card empty"><p class="err-text">{{ error() }}</p></div>}
+      @case ('done') {
+        @if (!results().length) {<div class="card empty" ybEmpty icon="search"><h3>No bookings found</h3><p>Check the ticket ID and mobile number and try again.</p></div>}
+        @else {
+          <h3>{{ results().length }} booking{{ results().length > 1 ? 's' : '' }} found</h3>
+          @for (b of results(); track b.id) {<div [attr.data-b]="b.id"><yb-ticket [booking]="b" /><div class="row wrap no-print" style="margin:-8px 0 28px">
+            <a class="btn btn-sm btn-outline" [href]="ticketLink(b)">Open ticket</a>
+            @if (b.status === 'confirmed') {@if (b.refund?.allowed) {<button class="btn btn-sm btn-danger" [attr.data-cancel]="b.id" (click)="askCancel(b)">Cancel booking</button><span class="small muted">Refund if cancelled now: <b>{{ b.refund?.amount | npr }}</b> ({{ b.refund?.percent }}%)</span>} @else {<span class="small muted">Cancellation closed (less than 6 hours to departure)</span>}}</div></div>}
+        }
+      }
+    }
+  </div>
+</div>
+<ng-template #cancelBody>@if (cancelling(); as b) {<p>You're cancelling <b>{{ b.id }}</b> ({{ routes(b) }}).</p>
+  <div class="kv"><span>Total paid</span><span>{{ b.fare.total | npr }}</span></div><div class="kv"><span>Departure in</span><span>{{ b.refund?.hoursLeft }} hours</span></div><div class="kv"><span>Refund policy</span><span>{{ b.refund?.percent }}%</span></div><div class="kv total"><span>Refund amount</span><span>{{ b.refund?.amount | npr }}</span></div>
+  <div class="field" style="margin-top:12px"><label for="cph">Confirm your mobile number</label><input class="input" id="cph" inputmode="numeric" maxlength="10" [formControl]="confirmPhone"></div><p class="err-text" id="cerr2">{{ cancelError() }}</p>}</ng-template>
+<ng-template #cancelFoot><button class="btn btn-outline" data-close>Keep booking</button><button class="btn btn-primary" id="docancel" [disabled]="busy()" (click)="doCancel()">@if (busy()) {<span class="spinner"></span> Cancelling…} @else {Cancel &amp; refund {{ cancelling()?.refund?.amount | npr }}}</button></ng-template>

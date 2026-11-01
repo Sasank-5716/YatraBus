@@ -1,0 +1,8 @@
+<form id="ef" class="grid g2" novalidate [formGroup]="form()">
+  @for (fd of def().fields; track fd.key) {
+    @if (isSelect(fd.type)) {<div class="field"><label [for]="'f_' + fd.key">{{ fd.label }}</label><select class="input" [id]="'f_' + fd.key" [name]="fd.key" [formControlName]="fd.key">@for (o of options(fd.type); track o[0]) {<option [value]="o[0]">{{ o[1] }}</option>}</select></div>}
+    @else if (fd.type === 'bool') {<label class="check" style="align-self:end"><input type="checkbox" [id]="'f_' + fd.key" [name]="fd.key" [formControlName]="fd.key">{{ fd.label }}</label>}
+    @else if (fd.type === 'amen') {<div class="field" style="grid-column:1/-1"><span class="label">{{ fd.label }}</span><div class="row wrap">@for (a of amenKeys; track a) {<label class="check"><input type="checkbox" name="amen" [value]="a" [checked]="hasAmen(a)" (change)="toggleAmen(a, $any($event.target).checked)">{{ amen[a] }}</label>}</div></div>}
+    @else {<div class="field"><label [for]="'f_' + fd.key">{{ fd.label }}</label><input class="input" [id]="'f_' + fd.key" [name]="fd.key" [type]="fd.type" [attr.step]="fd.type === 'number' ? 'any' : null" [attr.min]="fd.type === 'number' ? 0 : null" [formControlName]="fd.key" [class.invalid]="invalid()().has(fd.key)" required></div>}
+  }
+</form><p class="err-text" id="efe">{{ error()() }}</p>

@@ -1,0 +1,17 @@
+@if (booking(); as b) {
+@let l = b.legs[0];
+<div class="container page" style="max-width:960px">
+  @if (q['new']) {
+  <div class="success-hero"><div class="tick"><svg ybIcon="check"></svg></div><h1 style="font-size:30px">Booking confirmed!</h1><p class="muted">Your ticket ID is <b>{{ b.id }}</b>. We've sent the details to {{ b.phone }}{{ b.email ? ' and ' + b.email : '' }}.</p>@if (session.user() && b.userId === session.user()!.id) {<p><a class="btn btn-sm btn-outline" href="#/account">✓ Saved to your account — view all trips</a></p>}</div>
+  <div class="notify"><div class="sms"><div class="label" style="margin-bottom:8px"><svg ybIcon="phone"></svg> SMS to {{ b.phone }}</div><div class="bubble">YatraBus: Booking {{ b.id }} CONFIRMED. {{ l.snapshot.from }}-{{ l.snapshot.to }} {{ l.date | fmtDate: smsDate }} {{ l.boarding.time }} from {{ l.boarding.name }}. Seat(s) {{ l.seats.join(',') }}. {{ l.snapshot.operator }} {{ l.snapshot.busNo }}. Paid {{ b.fare.total | npr }}. Happy journey!</div></div>
+  <div class="email-mock"><div class="hd"><b>From:</b> tickets&#64;yatrabus.com.np · <b>To:</b> {{ b.email || '(no email provided)' }}<br><b>Subject:</b> Your e-ticket {{ b.id }} — {{ l.snapshot.from }} to {{ l.snapshot.to }}</div>Namaste {{ firstName(b.passengers[0].name) }},<br>Thank you for booking with Yatra Bus. Your e-ticket is attached. Please reach <b>{{ l.boarding.name }}</b> by <b>{{ l.boarding.time }}</b> on {{ l.date | fmtDate }}.<br><span class="muted small">— Team Yatra Bus</span></div></div>
+  }
+  <div class="row wrap no-print" style="margin-bottom:16px"><button class="btn btn-dark" id="print" (click)="print()"><svg ybIcon="print"></svg> Print ticket</button><button class="btn btn-outline" id="dl" (click)="download(b)"><svg ybIcon="download"></svg> Download ticket</button><a class="btn btn-outline" [href]="manageLink(b)">Manage / cancel</a><span class="grow"></span><a class="btn btn-primary" href="#/">Book another trip</a></div>
+  <yb-ticket [booking]="b" /><div class="card" style="margin-bottom:20px" ybFareDetails [booking]="b"></div></div>
+} @else if (booking() === null) {
+<div class="container page"><div class="card empty" ybEmpty icon="ticket"><h3>Ticket not found</h3><a class="btn btn-primary" href="#/manage">Find my booking</a></div></div>
+} @else if (error()) {
+<div class="container page"><div class="card empty" ybEmpty icon="alert"><h3>Something went wrong</h3><p>{{ error() }}</p><a class="btn btn-primary" href="#/">Back to home</a></div></div>
+} @else {
+<div class="container page"><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div></div>
+}

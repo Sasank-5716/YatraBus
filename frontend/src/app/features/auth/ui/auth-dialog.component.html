@@ -1,0 +1,19 @@
+@if (reason()) {<p class="muted small" style="margin-top:-6px">{{ reason() }}</p>}
+<div class="tabs-inline auth-tabs" role="tablist"><button role="tab" data-am="login" [attr.aria-selected]="tab() === 'login'" (click)="switch('login')">Log in</button><button role="tab" data-am="signup" [attr.aria-selected]="tab() === 'signup'" (click)="switch('signup')">Create account</button></div>
+<form id="af-login" class="auth-form" [hidden]="tab() !== 'login'" novalidate [formGroup]="login" (ngSubmit)="submitLogin()">
+  <yb-text-field id="l_email" label="Email or mobile number" autocomplete="username" [control]="login.controls.email" [error]="loginErrs()['l_email']" />
+  <yb-password-field id="l_pw" label="Password" autocomplete="current-password" [control]="login.controls.password" [error]="loginErrs()['l_pw']" />
+  <p class="err-text" id="l_err" role="alert">{{ loginError() }}</p>
+  <button class="btn btn-primary btn-block btn-lg" type="submit" [disabled]="busy() === 'login'">@if (busy() === 'login') {<span class="spinner"></span> Logging in…} @else {Log in}</button>
+  <p class="small muted center" style="margin:12px 0 0">New here? <a href="#" data-switch="signup" (click)="switch('signup', $event)">Create an account</a></p>
+</form>
+<form id="af-signup" class="auth-form" [hidden]="tab() !== 'signup'" novalidate [formGroup]="signup" (ngSubmit)="submitSignup()">
+  <yb-text-field id="s_name" label="Full name" autocomplete="name" [control]="signup.controls.name" [error]="signupErrs()['s_name']" />
+  <div class="grid g2"><yb-text-field id="s_email" label="Email" type="email" autocomplete="email" [control]="signup.controls.email" [error]="signupErrs()['s_email']" /><yb-text-field id="s_phone" label="Mobile number" type="tel" autocomplete="tel" inputmode="numeric" [maxlength]="10" placeholder="98XXXXXXXX" [control]="signup.controls.phone" [error]="signupErrs()['s_phone']" /></div>
+  <yb-password-field id="s_pw" label="Password" autocomplete="new-password" [control]="signup.controls.password" [error]="signupErrs()['s_pw']" />
+  <div class="strength" aria-hidden="true">@for (k of [0, 1, 2, 3]; track k) {<i [class]="k < strength() ? 's' + strength() : ''"></i>}</div><p class="tiny muted" id="s_hint" style="margin:-4px 0 8px">{{ hints[strength()] }}</p>
+  <yb-password-field id="s_confirm" label="Confirm password" autocomplete="new-password" [control]="signup.controls.confirm" [error]="signupErrs()['s_confirm']" />
+  <button class="btn btn-primary btn-block btn-lg" type="submit" [disabled]="busy() === 'signup'">@if (busy() === 'signup') {<span class="spinner"></span> Creating account…} @else {Create account}</button>
+  <p class="small muted center" style="margin:12px 0 0">Already have an account? <a href="#" data-switch="login" (click)="switch('login', $event)">Log in</a></p>
+</form>
+@if (guest()) {<div class="or"><span>or</span></div><button class="btn btn-outline btn-block" id="as-guest" (click)="asGuest()">Continue as guest</button>}

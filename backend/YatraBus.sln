@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9F9C5833-E1F6-44D1-8219-0DD97DCCF3D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YatraBus.Api", "src\YatraBus.Api\YatraBus.Api.csproj", "{4CE2B9A5-65BB-41DE-8AB3-331914DCCD8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YatraBus.Application", "src\YatraBus.Application\YatraBus.Application.csproj", "{EFE1DAFC-6FAB-4DCA-9BB9-FC72890C58A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YatraBus.Domain", "src\YatraBus.Domain\YatraBus.Domain.csproj", "{7F8B5190-6923-4BEB-A581-7C88996F7E33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YatraBus.Infrastructure", "src\YatraBus.Infrastructure\YatraBus.Infrastructure.csproj", "{C61D0559-A340-4DDB-BBF2-3E22C6B7E9B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{10FF7633-2B6E-48D3-A87E-32D2A1ECBCB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YatraBus.Tests", "tests\YatraBus.Tests\YatraBus.Tests.csproj", "{CDA839E8-EBE4-4E92-99EF-BA9BD025EE8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4CE2B9A5-65BB-41DE-8AB3-331914DCCD8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CE2B9A5-65BB-41DE-8AB3-331914DCCD8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CE2B9A5-65BB-41DE-8AB3-331914DCCD8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CE2B9A5-65BB-41DE-8AB3-331914DCCD8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE1DAFC-6FAB-4DCA-9BB9-FC72890C58A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE1DAFC-6FAB-4DCA-9BB9-FC72890C58A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE1DAFC-6FAB-4DCA-9BB9-FC72890C58A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE1DAFC-6FAB-4DCA-9BB9-FC72890C58A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F8B5190-6923-4BEB-A581-7C88996F7E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F8B5190-6923-4BEB-A581-7C88996F7E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F8B5190-6923-4BEB-A581-7C88996F7E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F8B5190-6923-4BEB-A581-7C88996F7E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C61D0559-A340-4DDB-BBF2-3E22C6B7E9B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61D0559-A340-4DDB-BBF2-3E22C6B7E9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61D0559-A340-4DDB-BBF2-3E22C6B7E9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61D0559-A340-4DDB-BBF2-3E22C6B7E9B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDA839E8-EBE4-4E92-99EF-BA9BD025EE8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDA839E8-EBE4-4E92-99EF-BA9BD025EE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDA839E8-EBE4-4E92-99EF-BA9BD025EE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDA839E8-EBE4-4E92-99EF-BA9BD025EE8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4CE2B9A5-65BB-41DE-8AB3-331914DCCD8A} = {9F9C5833-E1F6-44D1-8219-0DD97DCCF3D4}
+		{EFE1DAFC-6FAB-4DCA-9BB9-FC72890C58A2} = {9F9C5833-E1F6-44D1-8219-0DD97DCCF3D4}
+		{7F8B5190-6923-4BEB-A581-7C88996F7E33} = {9F9C5833-E1F6-44D1-8219-0DD97DCCF3D4}
+		{C61D0559-A340-4DDB-BBF2-3E22C6B7E9B6} = {9F9C5833-E1F6-44D1-8219-0DD97DCCF3D4}
+		{CDA839E8-EBE4-4E92-99EF-BA9BD025EE8C} = {10FF7633-2B6E-48D3-A87E-32D2A1ECBCB9}
+	EndGlobalSection
+EndGlobal

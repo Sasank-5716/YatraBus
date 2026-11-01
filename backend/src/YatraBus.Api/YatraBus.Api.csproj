@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><RootNamespace>YatraBus.Api</RootNamespace></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YatraBus.Infrastructure\YatraBus.Infrastructure.csproj" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+  </ItemGroup>
+  <ItemGroup><InternalsVisibleTo Include="YatraBus.Tests" /></ItemGroup>
+</Project>

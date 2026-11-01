@@ -1,0 +1,18 @@
+<div class="card" [formGroup]="filter"><div class="toolbar"><div class="field grow"><label for="bq">Search</label><input class="input" id="bq" placeholder="Ticket ID, phone, passenger, route…" formControlName="q"></div>
+  <div class="field"><label for="bs">Status</label><select class="input" id="bs" formControlName="status"><option value="">All</option><option value="confirmed">Confirmed</option><option value="cancelled">Cancelled</option></select></div>
+  <div class="field"><label for="bd">Travel date</label><input class="input" type="date" id="bd" formControlName="date"></div><a class="btn btn-dark" id="csv" [href]="csv()" download><svg ybIcon="download"></svg> Export CSV</a></div><div id="btable">
+  @if (list(); as list) {
+    @if (list.length) {
+    <div class="table-wrap"><table><thead><tr><th>Ticket</th><th>Journey</th><th>Passengers</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>@for (b of list; track b.id) {<tr>
+      <td><b>{{ b.id }}</b><div class="tiny muted">{{ b.createdAt | stamp: 'short' }}</div></td>
+      <td>@for (l of b.legs; track $index) {<ng-container>{{ l.snapshot.from }} → {{ l.snapshot.to }}<div class="tiny muted">{{ l.date }} {{ l.snapshot.departure }} · {{ l.snapshot.operator }} · {{ l.seats.join(',') }}</div></ng-container>}</td>
+      <td>{{ names(b) }}<div class="tiny muted">{{ b.phone }}</div></td>
+      <td><b>{{ b.fare.total | npr }}</b><div class="tiny muted">{{ b.payment.method }}{{ b.fare.coupon ? ' · ' + b.fare.coupon : '' }}</div></td>
+      <td>@if (b.status === 'confirmed') {<span class="badge green">Confirmed</span>} @else {<span class="badge red">Cancelled</span><div class="tiny muted">refund {{ b.refund?.amount | npr }} ({{ b.refund?.by }})</div>}</td>
+      <td class="row" style="gap:6px"><button class="btn btn-sm btn-outline" [attr.data-view]="b.id" (click)="view(b)">View</button>@if (b.status === 'confirmed') {<button class="btn btn-sm btn-danger" [attr.data-acancel]="b.id" (click)="askCancel(b)">Cancel</button>}</td></tr>}</tbody></table></div><p class="small muted" style="margin-top:8px">{{ list.length }} booking(s)</p>
+    } @else {<div class="empty" ybEmpty icon="inbox"><h3>No bookings found</h3><p class="muted">Bookings made on the site will appear here.</p></div>}
+  } @else {<div class="skeleton" style="height:200px"></div>}
+</div></div>
+<ng-template #viewBody>@if (target(); as x) {<yb-ticket [booking]="x" /><div class="card" style="margin-bottom:20px" ybFareDetails [booking]="x"></div>}</ng-template>
+<ng-template #cancelBody><p>Admin cancellations refund 100% of the amount paid (simulated) and release the seats.</p></ng-template>
+<ng-template #cancelFoot><button class="btn btn-outline" data-close>Back</button><button class="btn btn-primary" id="ac" (click)="doCancel()">Cancel booking</button></ng-template>

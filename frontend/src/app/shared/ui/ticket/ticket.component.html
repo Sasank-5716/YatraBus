@@ -1,0 +1,17 @@
+@let b = booking();
+@let multi = b.legs.length > 1;
+@for (l of b.legs; track $index; let i = $index) {
+  <article class="ticket {{ b.status }}" [attr.aria-label]="'Ticket ' + b.id + (multi ? (i ? ' return' : ' outbound') : '')">
+    <div class="ticket-head"><div><div class="tiny" style="opacity:.75;text-transform:uppercase;letter-spacing:.08em">E-ticket {{ multi ? (i ? '· Return' : '· Outbound') : '' }}</div><div class="pnr">{{ b.id }}</div></div>
+      <div style="text-align:right">@if (b.status === 'confirmed') {<span class="badge green">CONFIRMED</span>} @else {<span class="badge red">CANCELLED</span>}<div class="tiny" style="opacity:.75;margin-top:4px">Booked {{ b.createdAt | stamp }}</div></div></div>
+    <div class="ticket-body"><div class="ticket-main">
+      <div class="row between wrap"><div><b>{{ l.snapshot.operator }}</b><div class="muted small">{{ l.snapshot.busType }} · {{ l.snapshot.busNo }}</div></div>@if (b.status === 'cancelled') {<span class="stamp">CANCELLED</span>}</div>
+      <div class="journey"><div><div class="t">{{ l.boarding.time }}</div><b>{{ l.snapshot.from }}</b><div class="muted small">{{ l.boarding.name }}</div></div><div class="muted small center">{{ l.snapshot.durationMins | dur }}<br><span class="j-line"><svg ybIcon="bus"></svg></span></div><div class="end"><div class="t">{{ l.dropping.time }}</div><b>{{ l.snapshot.to }}</b><div class="muted small">{{ l.dropping.name }}</div></div></div>
+      <div class="meta"><div><span class="label">Travel date</span>{{ l.date | fmtDate: { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' } }}</div><div><span class="label">Departure</span>{{ l.snapshot.departure | t12 }}</div><div><span class="label">Seats</span><b>{{ l.seats.join(', ') }}</b></div>
+      <div><span class="label">Mobile</span>{{ b.phone }}</div><div><span class="label">{{ i ? 'Trip' : 'Total paid' }}</span>{{ i ? 'Round trip (paid with outbound)' : (b.fare.total | npr) }}</div><div><span class="label">Payment</span>{{ b.payment.method }}</div></div>
+      <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>Passenger</th><th>Age</th><th>Gender</th><th>Seat</th></tr></thead><tbody>@for (p of b.passengers; track $index; let k = $index) {<tr><td>{{ p.name }}</td><td>{{ p.age }}</td><td>{{ p.gender | gender }}</td><td>{{ l.seats[k] }}</td></tr>}</tbody></table></div>
+      @if (b.status === 'cancelled') {<p class="small" style="margin-top:12px"><b>Refund:</b> {{ b.refund?.amount | npr }} ({{ b.refund?.percent }}%) to original payment method · cancelled {{ b.cancelledAt! | stamp }}</p>}
+      @else {<p class="tiny muted" style="margin-top:12px">Report at the boarding point 15 minutes before departure with a valid photo ID.</p>}
+    </div><div class="ticket-qr"><svg ybQr [text]="qrText()" [px]="4"></svg><span class="tiny muted">Scan at boarding</span><b class="small">{{ b.id }}</b></div></div>
+  </article>
+}

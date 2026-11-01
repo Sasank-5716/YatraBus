@@ -1,0 +1,1 @@
+import{J as n,fa as s}from"./chunk-AMIM7SBL.js";var o="yb_admin",r=class e{token=s(sessionStorage.getItem(o));set(t){sessionStorage.setItem(o,t),this.token.set(t)}clear(){sessionStorage.removeItem(o),this.token.set(null)}static \u0275fac=function(a){return new(a||e)};static \u0275prov=n({token:e,factory:e.\u0275fac,providedIn:"root"})};export{r as a};

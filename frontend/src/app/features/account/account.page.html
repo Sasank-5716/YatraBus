@@ -1,0 +1,42 @@
+@if (!session.user()) {
+<div class="container page"><div class="card empty" style="max-width:520px;margin:40px auto" ybEmpty icon="user"><h2>Your Yatra account</h2><p class="muted">Log in to see your trips, manage bookings and check out faster.</p><div class="row" style="justify-content:center"><button class="btn btn-primary" id="acc-login" (click)="login('login')">Log in</button><button class="btn btn-outline" id="acc-signup" (click)="login('signup')">Create account</button></div></div></div>
+} @else if (list(); as list) {
+@let u = session.user()!;
+<section class="account-hero"><div class="container row wrap" style="gap:20px">
+  <span class="avatar xl">{{ u.name | initials }}</span>
+  <div class="grow"><h1 style="font-size:28px;margin:0 0 4px">Namaste, {{ first() }} <span class="wave-ic"><svg ybIcon="wave"></svg></span></h1><div class="muted-light small">{{ u.email }} · {{ u.phone }} · Member since {{ since() }}</div></div>
+  <div class="row wrap acc-stats"><div class="stat-mini"><b><span [ybCount]="list.length"></span></b><span>Bookings</span></div><div class="stat-mini"><b><span [ybCount]="upcoming()"></span></b><span>Upcoming</span></div><div class="stat-mini"><b><span [ybCount]="spent()" fmt="npr"></span></b><span>Total spent</span></div></div>
+</div></section>
+<div class="container page">
+  <div class="tabs-inline acc-tabs" role="tablist">@for (t of tabs; track t[0]) {<button role="tab" [attr.data-acct]="t[0]" [attr.aria-selected]="t[0] === tab" (click)="go(t[0])">{{ t[1] }}</button>}</div>
+  <div id="acc-panel">
+    @switch (tab) {
+    @case ('bookings') {
+      @for (b of list; track b.id) {
+        @let l = b.legs[0];
+        <article class="card booking-row"><div class="br-date"><b>{{ l.date | fmtDate: { day: 'numeric' } }}</b><span>{{ l.date | fmtDate: { month: 'short' } }}</span></div>
+        <div class="grow"><div class="row wrap" style="gap:8px"><b style="font-size:17px">{{ l.snapshot.from }} → {{ l.snapshot.to }}</b>@if (b.legs.length > 1) {<span class="badge blue">Round trip</span>}@if (b.status === 'cancelled') {<span class="badge red">Cancelled</span>} @else if (past(b)) {<span class="badge">Completed</span>} @else {<span class="badge green">Upcoming</span>}</div>
+        <div class="muted small">{{ l.snapshot.departure }} · {{ l.snapshot.operator }} · {{ l.snapshot.busType }} · Seats {{ l.seats.join(', ') }}</div><div class="tiny muted">Ticket {{ b.id }} · {{ b.passengers.length }} passenger(s)</div></div>
+        <div class="br-amt"><b>{{ b.fare.total | npr }}</b><div class="row" style="gap:6px;margin-top:8px"><a class="btn btn-sm btn-outline" [href]="link('ticket', b)">View ticket</a>@if (b.status === 'confirmed' && b.refund?.allowed) {<a class="btn btn-sm btn-danger" [href]="link('manage', b)">Cancel</a>}</div></div></article>
+      } @empty {
+        <div class="card empty" ybEmpty icon="bus"><h3>No trips yet</h3><p class="muted">Your bookings will appear here once you book a bus.</p><a class="btn btn-primary" href="#/">Find a bus</a></div>
+      }
+    }
+    @case ('profile') {
+      <form class="card" id="pf" style="max-width:640px" novalidate (submit)="saveProfile($event)"><h3>Personal details</h3><p class="muted small">Used to pre-fill your bookings and send tickets.</p>
+        <yb-text-field id="p_name" label="Full name" autocomplete="name" [control]="profile.controls.name" [error]="errs()['p_name']" /><div class="grid g2"><yb-text-field id="p_email" label="Email" type="email" autocomplete="email" [control]="profile.controls.email" [error]="errs()['p_email']" /><yb-text-field id="p_phone" label="Mobile number" type="tel" autocomplete="tel" inputmode="numeric" [maxlength]="10" [control]="profile.controls.phone" [error]="errs()['p_phone']" /></div>
+        <button class="btn btn-primary" style="margin-top:8px" [disabled]="busy()">@if (busy()) {<span class="spinner"></span> Saving…} @else {Save changes}</button></form>
+    }
+    @default {
+      <form class="card" id="cpf" #cpf style="max-width:520px" novalidate (submit)="savePassword($event, cpf)"><h3>Change password</h3><yb-password-field id="c_cur" label="Current password" autocomplete="current-password" [control]="password.controls.current" [error]="errs()['c_cur']" /><yb-password-field id="c_new" label="New password" autocomplete="new-password" [control]="password.controls.password" [error]="errs()['c_new']" /><yb-password-field id="c_conf" label="Confirm new password" autocomplete="new-password" [control]="password.controls.confirm" [error]="errs()['c_conf']" />
+        <button class="btn btn-primary" style="margin-top:8px" [disabled]="busy()">@if (busy()) {<span class="spinner"></span> Updating…} @else {Update password}</button></form>
+      <div class="card" style="max-width:520px;margin-top:16px"><h3>Sign out</h3><p class="muted small">Log out of Yatra Bus on this device. Changing your password signs you out everywhere else.</p><button class="btn btn-outline" id="lo2" (click)="logout()">Log out</button></div>
+    }
+    }
+  </div>
+</div>
+} @else if (error()) {
+<div class="container page"><div class="card empty" ybEmpty icon="alert"><h3>Something went wrong</h3><p>{{ error() }}</p><a class="btn btn-primary" href="#/">Back to home</a></div></div>
+} @else {
+<div class="container page"><div class="skeleton sk-card"></div><div class="skeleton" style="height:300px"></div></div>
+}

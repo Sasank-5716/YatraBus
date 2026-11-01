@@ -1,0 +1,18 @@
+<div class="container nav">
+  <a href="#/" class="brand" aria-label="Yatra Bus home"><span class="brand-mark" aria-hidden="true"></span><span>Yatra<b>Bus</b></span></a>
+  <button class="nav-toggle" aria-label="Open menu" [attr.aria-expanded]="navOpen()" aria-controls="nav-links" (click)="navOpen.set(!navOpen())">☰</button>
+  <nav id="nav-links" class="nav-links" aria-label="Main" [class.open]="navOpen()">
+    <a href="#/" data-nav="home" [class.active]="active() === 'home'">Bus tickets</a>
+    <a href="#/#offers" data-nav="offers">Offers</a>
+    <a href="#/manage" data-nav="manage" [class.active]="active() === 'manage'">Manage booking</a>
+  </nav>
+  <div class="auth-area" id="auth-area" aria-live="polite">
+    @if (session.user(); as u) {
+      <div class="user-menu"><button class="user-btn" id="ubtn" aria-haspopup="menu" [attr.aria-expanded]="menuOpen()" (click)="toggleMenu($event)"><span class="avatar">{{ u.name | initials }}</span><span class="uname">{{ first() }}</span><span class="caret" aria-hidden="true">▾</span></button>
+        <div class="dropdown" id="udrop" role="menu" [class.open]="menuOpen()" (click)="menuClick($event)"><div class="dd-head"><span class="avatar lg">{{ u.name | initials }}</span><div><b>{{ u.name }}</b><div class="tiny muted">{{ u.email }}</div></div></div>
+          <a role="menuitem" href="#/account"><svg ybIcon="user"></svg> My account</a><a role="menuitem" href="#/account?tab=bookings"><svg ybIcon="ticket"></svg> My bookings</a><a role="menuitem" href="#/account?tab=security"><svg ybIcon="lock"></svg> Change password</a><button role="menuitem" id="ulogout" (click)="logout()"><svg ybIcon="logout"></svg> Log out</button></div></div>
+    } @else {
+      <button class="btn btn-ghost btn-sm" id="hd-login" (click)="open('login')">Log in</button><button class="btn btn-primary btn-sm" id="hd-signup" (click)="open('signup')">Sign up</button>
+    }
+  </div>
+</div>

@@ -1,0 +1,55 @@
+@if (meta(); as m) {
+<section class="hero" aria-label="Search buses">
+  <div class="hero-mesh" aria-hidden="true"></div>
+  <div class="hero-layer sun" data-parallax="0.35" aria-hidden="true"><span></span></div>
+  <div class="hero-layer clouds" data-parallax="0.25" aria-hidden="true"><i class="cl c1"></i><i class="cl c2"></i><i class="cl c3"></i></div>
+  <div class="hero-layer far" data-parallax="0.22" aria-hidden="true" ybSceneFar></div>
+  <div class="hero-layer mid" data-parallax="0.12" aria-hidden="true" ybSceneMid></div>
+  <div class="hero-layer near" data-parallax="0.04" aria-hidden="true" ybSceneNear></div>
+  <div class="road" aria-hidden="true"><div class="bus-anim"><div class="bus-drive" ybSceneBus></div></div></div>
+  <div class="container hero-content">
+    <span class="eyebrow" data-fx="down"><svg ybIcon="shield"></svg> {{ m.operators }}+ verified operators · {{ m.popular.length * 2 }}+ routes across Nepal</span>
+    <h1 data-fx="up">Travel Nepal, <span class="grad-text">the comfortable way.</span></h1>
+    <p class="lead" data-fx="up">Compare buses, pick your favourite seat and get an instant e-ticket — from the lakes of Pokhara to the plains of Janakpur.</p>
+    <form ybSearchForm [cities]="m.cities"></form>
+  </div>
+</section>
+<section class="trust-bar" aria-label="Why travellers trust us"><div class="container">
+  <div class="trust-grid">
+    @for (t of trust; track t.label) {<div class="trust-item"><span class="ti-ic"><svg [ybIcon]="t.icon"></svg></span><div><b><span [ybCount]="t.n" [suffix]="t.suffix" [dec]="t.dec"></span></b><span>{{ t.label }}</span></div></div>}
+  </div>
+  <div class="logos" aria-label="Partner operators"><span class="logos-label">Trusted partners</span><div class="marquee"><div class="marquee-track">@for (o of partners; track $index) {<span class="logo-badge" [attr.aria-hidden]="o.dup ? 'true' : null"><i>{{ o.initials }}</i>{{ o.name }}</span>}</div></div></div>
+</div></section>
+<section class="section" id="offers"><div class="container">
+  <div class="section-head"><div><span class="kicker">Deals</span><h2>Offers for you</h2><p>Apply these codes at checkout</p></div></div>
+  <div class="grid g4">@for (o of m.offers; track o.code) {<div class="offer" data-tilt><span class="shine" aria-hidden="true"></span><div><div class="tiny offer-k">{{ o.roundTripOnly ? 'Round trip' : 'Limited offer' }}</div><h3 style="margin:6px 0 0">{{ o.description }}</h3></div><div><span class="code">{{ o.code }} <button type="button" [attr.data-copy]="o.code" [attr.aria-label]="'Copy code ' + o.code" (click)="copy(o.code)">Copy</button></span></div></div>}</div>
+</div></section>
+<section class="section soft-bg" style="padding-top:var(--s7)"><div class="bg-deco" data-parallax="0.08" aria-hidden="true"></div><div class="container">
+  <div class="section-head"><div><span class="kicker">Explore</span><h2>Popular routes</h2><p>Daily departures on Nepal's busiest highways</p></div></div>
+  <div class="grid g3">@for (r of m.popular; track $index; let i = $index) {<button type="button" class="route-card" [attr.data-from]="r.from" [attr.data-to]="r.to" (click)="pickRoute(r)"><span class="rc-img" [style.background-image]="art(i)"></span><span class="rc-overlay"></span><span class="rc-body"><span class="cities">{{ r.from }} <svg ybIcon="arrow"></svg> {{ r.to }}</span><span class="rc-meta">{{ r.km }} km · ~{{ r.durationMins | dur }} · {{ r.trips }} buses daily</span><span class="rc-price"><span>from <b>{{ r.minFare | npr }}</b></span><span class="rc-go">View buses <svg ybIcon="arrow"></svg></span></span></span></button>}</div>
+</div></section>
+<section class="section"><div class="container">
+  <div class="section-head"><div><span class="kicker">Why Yatra</span><h2>Built for the way Nepal travels</h2></div></div>
+  <div class="grid g4">
+    @for (f of features; track f.title) {<div class="feature"><div class="ic"><svg [ybIcon]="f.icon"></svg></div><div><h3>{{ f.title }}</h3><p class="muted">{{ f.text }}</p></div></div>}
+  </div>
+</div></section>
+<section ybTestimonials></section>
+<section class="section app-sec"><div class="container app-grid">
+  <div class="app-copy" data-fx="left"><span class="kicker light">Mobile app</span><h2>Your ticket, always in your pocket</h2><p>Live bus tracking, offline tickets and exclusive app-only fares. Get Rs. 100 off your first app booking.</p>
+    <ul class="ticks">@for (t of ticks; track t) {<li><svg ybIcon="checkS"></svg>{{ t }}</li>}</ul>
+    <div class="row wrap" style="gap:12px;margin-top:20px"><a class="store" href="#/" aria-label="Get it on Google Play (coming soon)"><svg ybIcon="play"></svg><span><small>GET IT ON</small>Google Play</span></a><a class="store" href="#/" aria-label="Download on the App Store (coming soon)"><svg ybIcon="apple"></svg><span><small>Download on the</small>App Store</span></a><div class="app-qr" title="Scan to download"><svg ybQr text="https://yatrabus.com.np/app" [px]="2" color="#0b1f3a"></svg></div></div></div>
+  <div class="phone-wrap" data-fx="right" data-parallax="-0.06"><div class="phone"><div class="notch"></div><div class="ph-screen">
+    <div class="ph-head"><span class="brand-mark" style="width:26px;height:26px;background-size:18px"></span><b>YatraBus</b></div>
+    <div class="ph-ticket"><div class="tiny" style="opacity:.7">E-TICKET</div><b>YB7K2Q9A</b><div class="ph-route"><span><b>06:30</b><small>Kathmandu</small></span><span class="ph-line"></span><span><b>13:30</b><small>Pokhara</small></span></div><div class="ph-qr"><svg ybQr text="YATRABUS|YB7K2Q9A" [px]="2"></svg></div></div>
+    <div class="ph-row"><span class="ph-dot"></span>Bus departs in <b>&nbsp;2h 15m</b></div><div class="ph-row"><span class="ph-dot g"></span>Seats <b>&nbsp;A3, A4</b></div>
+  </div></div><div class="float-chip c1"><svg ybIcon="checkS"></svg> Booking confirmed</div><div class="float-chip c2"><svg ybIcon="star2"></svg> 4.8 Everest Comfort</div></div>
+</div></section>
+<section class="section faq" id="faq"><div class="container" style="max-width:860px">
+  <div class="section-head center-head"><div><span class="kicker">Help</span><h2>Frequently asked questions</h2></div></div>
+  @for (f of faqs; track f.q) {<details><summary>{{ f.q }}</summary><p>{{ f.a }}</p></details>}
+</div></section>
+<section class="section" style="padding-top:0"><div class="container"><form ybNewsletter></form></div></section>
+} @else if (error()) {
+<div class="container page"><div class="card empty" ybEmpty icon="alert"><h3>Something went wrong</h3><p>{{ error() }}</p><a class="btn btn-primary" href="#/">Back to home</a></div></div>
+}

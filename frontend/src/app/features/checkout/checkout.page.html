@@ -1,0 +1,48 @@
+@if (empty) {
+<div class="container page"><div class="card empty" ybEmpty icon="ticket"><h3>No seats selected</h3><p>Start by searching for a bus.</p><a class="btn btn-primary" href="#/">Search buses</a></div></div>
+} @else if (meta(); as m) {
+<div class="route-bar"><div class="container"><div class="row between wrap"><div><h1>Review &amp; pay</h1><div class="muted small">{{ legs.length > 1 ? 'Round trip' : 'One way' }} · {{ n }} passenger{{ n > 1 ? 's' : '' }}</div></div><div class="steps" aria-label="Booking progress" ybSteps [active]="legs.length > 1 ? 2 : 1" [round]="legs.length > 1"></div></div></div></div>
+<div class="container page"><div class="checkout">
+  <div>
+    <div class="timer" id="timer" role="timer" aria-live="off" [class.urgent]="urgent()"><svg ybIcon="timer"></svg> Seats held for you — <b id="tleft">{{ left() }}</b> remaining</div>
+    <form id="cf" novalidate (submit)="$event.preventDefault()">
+    @if (session.user(); as u) {<div class="signed-in"><span class="avatar">{{ u.name | initials }}</span><span>Booking as <b>{{ u.name }}</b> — this trip will be saved to your account.</span></div>}
+    <div class="card" style="margin-top:16px"><h3>Passenger details</h3>
+      @for (g of pax.controls; track $index; let i = $index) {
+      <fieldset class="pax" style="border:1px solid var(--line)"><legend class="label" style="padding:0 6px">Passenger {{ i + 1 }} · Seat {{ seatsFor(i) }}</legend>
+      <div class="pax-grid"><div class="field f-name"><label [for]="'pn' + i">Full name</label><input class="input" [id]="'pn' + i" autocomplete="name" [formControl]="g.controls.name" [class.invalid]="invalid()['pn' + i]" [attr.aria-invalid]="invalid()['pn' + i] ?? null" required></div>
+      <div class="field"><label [for]="'pa' + i">Age</label><input class="input" [id]="'pa' + i" type="number" min="1" max="110" inputmode="numeric" [formControl]="g.controls.age" [class.invalid]="invalid()['pa' + i]" [attr.aria-invalid]="invalid()['pa' + i] ?? null" required></div>
+      <div class="field"><span class="label" [id]="'pgl' + i">Gender</span><div class="seg" role="radiogroup" [attr.aria-labelledby]="'pgl' + i">@for (o of genders; track o[0]) {<label><input type="radio" [attr.name]="'pg' + i" [name]="'pg' + i" [attr.value]="o[0]" [value]="o[0]" [formControl]="g.controls.gender">{{ o[1] }}</label>}</div></div></div>
+      <div class="err-text" [id]="'pe' + i">@switch (notes()[i]) {@case ('ladies-required') {<span class="badge pink">Ladies seat — female passenger required</span>} @case ('ladies') {<span class="badge pink">Ladies seat</span>} @case ('gender') {Please select gender} @case ('lady-bad') {This is a ladies seat — please choose another seat or a female passenger}}</div></fieldset>
+      }
+    </div>
+    <div class="card" style="margin-top:16px"><h3>Contact details</h3><p class="muted small">Your e-ticket will be sent here by SMS and email.</p>
+      <div class="grid g2"><div class="field"><label for="phone">Mobile number</label><input class="input" id="phone" type="tel" inputmode="numeric" maxlength="10" placeholder="98XXXXXXXX" autocomplete="tel" [formControl]="phone" [class.invalid]="invalid()['phone']" [attr.aria-invalid]="invalid()['phone'] ?? null" required></div>
+      <div class="field"><label for="email">Email (optional)</label><input class="input" id="email" type="email" placeholder="you@example.com" autocomplete="email" [formControl]="email" [class.invalid]="invalid()['email']" [attr.aria-invalid]="invalid()['email'] ?? null"></div></div><div class="err-text" id="ce">{{ contactError() }}</div>
+    </div>
+    <div class="card" style="margin-top:16px"><div class="row between"><h3 style="margin:0">Payment method</h3><span class="tiny muted" title="Payments run in test mode">Test mode</span></div>
+      <div class="pay-methods" style="margin-top:14px" role="radiogroup" aria-label="Payment method">
+        <label class="pm"><input type="radio" name="pm" value="eSewa" [formControl]="pm"><span class="logo esewa">eSewa</span></label>
+        <label class="pm"><input type="radio" name="pm" value="Khalti" [formControl]="pm"><span class="logo khalti">Khalti</span></label>
+        <label class="pm"><input type="radio" name="pm" value="Card" [formControl]="pm"><span class="logo card">Card</span></label>
+      </div></div>
+    </form>
+  </div>
+  <aside class="summary">
+    <div class="card"><h3>Trip summary</h3>@for (l of legs; track $index; let i = $index) {<div class="leg-sum"><div class="leg-ic">{{ i ? 'RET' : 'OUT' }}</div><div class="small"><b>{{ l.trip.from }} → {{ l.trip.to }}</b><br>{{ l.date | fmtDate }} · {{ l.trip.departure }} – {{ l.trip.arrival }}<br>{{ l.trip.operator }} · {{ l.trip.busType }}<br><span class="muted"><svg ybIcon="flag"></svg> {{ l.boarding }} ({{ l.trip.boardingTime || '' }}) · <svg ybIcon="pin"></svg> {{ l.dropping }}</span><br>Seats <b>{{ l.seats.join(', ') }}</b> · <a [href]="seatLink(i)">change</a></div></div>}</div>
+    <div class="card" style="margin-top:16px"><h3>Offers &amp; coupons</h3><div id="cbox">@if (applied()) {<div class="applied"><span><svg ybIcon="tagS"></svg> {{ coupon() }} applied · −{{ quote()!.discount | npr }}</span><button type="button" class="btn btn-sm btn-ghost" id="crm" (click)="removeCoupon()">Remove</button></div>} @else {<div class="coupon-row"><input class="input" id="cin" placeholder="Enter coupon code" aria-label="Coupon code" [formControl]="couponInput" style="text-transform:uppercase" (keydown)="couponKey($event)"><button type="button" class="btn btn-dark" id="capply" (click)="apply()">Apply</button></div><div class="err-text" id="cerr">{{ couponError() }}</div>}</div>
+      <div class="row wrap" style="margin-top:10px;gap:6px">@for (o of m.offers; track o.code) {<button type="button" class="chip" [attr.data-code]="o.code" [title]="o.description" (click)="useCode(o.code)">{{ o.code }}</button>}</div></div>
+    <div class="card" style="margin-top:16px"><h3>Fare breakdown</h3><div id="fare">@if (quoteError()) {<p class="err-text">{{ quoteError() }}</p>} @else if (quote(); as f) {<yb-fare-breakdown [lines]="fareLines()" [discount]="f.discount" [coupon]="f.coupon" [taxLabel]="taxLabel()" [tax]="f.tax" [service]="f.service" [total]="f.total" totalLabel="Total payable" />} @else {<div class="skeleton" style="height:120px"></div>}</div>
+      <label class="check small" style="margin-top:10px"><input type="checkbox" id="agree" [formControl]="agree"> I agree to the <a href="#/#faq" target="_blank">cancellation policy</a> and terms</label>
+      <button class="btn btn-primary btn-block btn-lg" id="paybtn" style="margin-top:10px" (click)="pay()">{{ quote() ? 'Pay ' + (quote()!.total | npr) : 'Pay securely' }}</button>
+      <p class="tiny muted center" style="margin:8px 0 0"><svg ybIcon="lock"></svg> Secure checkout · test mode, no money is charged</p></div>
+  </aside>
+</div></div>
+} @else if (quoteError()) {
+<div class="container page"><div class="card empty" ybEmpty icon="alert"><h3>Something went wrong</h3><p>{{ quoteError() }}</p><a class="btn btn-primary" href="#/">Back to home</a></div></div>
+}
+
+<ng-template #payBody><div class="gateway"><div class="logo" [style.background]="gatewayBg[method()]">{{ method() }}</div><p class="muted">You will be redirected back to Yatra Bus after confirming.</p><div class="kv total"><span>Amount</span><span>{{ quote()?.total | npr }}</span></div><p class="small muted">Merchant: Yatra Bus · {{ n }} passenger(s)</p><p class="tiny muted">Test mode — no money is charged.</p></div></ng-template>
+<ng-template #payFoot><button class="btn btn-outline" data-close>Cancel</button><button class="btn btn-primary" id="confirmpay" [disabled]="paying()" (click)="confirmPay()">@if (paying()) {<span class="spinner"></span> Processing…} @else {Confirm payment}</button></ng-template>
+<ng-template #expiredBody><p>Your seats were released because the 10-minute hold ran out. Please choose your seats again.</p></ng-template>
+<ng-template #expiredFoot><button class="btn btn-primary" id="again" (click)="chooseAgain()">Choose seats again</button></ng-template>

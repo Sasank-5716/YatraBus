@@ -1,0 +1,18 @@
+<div class="route-bar"><div class="container"><div class="row between wrap">
+  <div><h1>{{ q['from'] }} → {{ q['to'] }}</h1><div class="muted small">{{ q['date'] | fmtDate: longDate }}{{ leg === 1 ? ' · Return journey' : '' }}</div></div>
+  <div class="row wrap"><div class="steps" aria-label="Booking progress" ybSteps [active]="leg" [round]="round"></div><a class="btn btn-sm btn-outline" href="#/">Modify search</a></div>
+</div></div></div>
+<div class="container page" style="padding-top:var(--s3)">
+  <div class="date-strip" role="group" aria-label="Change date">@for (d of dates; track d) {<button type="button" [class.on]="d === q['date']" [attr.data-d]="d" [attr.aria-pressed]="d === q['date']" (click)="pickDate(d)">{{ weekday(d) }}<b>{{ dayMonth(d) }}</b></button>}</div>
+  <div class="results">
+    <aside ybFilters [open]="filtersOpen()" (done)="filtersOpen.set(false)"></aside>
+    <div><div class="sortbar" role="group" aria-label="Sort"><button class="btn btn-sm btn-outline filter-toggle" id="ft" aria-controls="filters" (click)="filtersOpen.set(true)"><svg ybIcon="filter"></svg> Filters</button><span class="label">Sort by</span><span id="sorts">@for (o of sorts; track o[0]) {@if (!$first) {&ngsp;}<button type="button" class="chip" [attr.data-sort]="o[0]" [attr.aria-pressed]="o[0] === s.sort()" (click)="s.sort.set(o[0])">{{ o[1] }}</button>}</span><span class="grow"></span><span class="muted small" id="count">{{ countText() }}</span></div>
+    <div id="list">
+      @if (error()) {<div class="card empty" ybEmpty icon="wifiOff"><h3>Couldn't load buses</h3><p>{{ error() }}</p><button class="btn btn-primary" (click)="retry()">Retry</button></div>}
+      @else if (!s.list()) {@for (k of skeletons; track k) {<div class="skeleton sk-card"></div>}}
+      @else if (!s.list()!.length) {<div class="card empty" ybEmpty icon="bus"><h3>No buses on this route</h3><p>Try a nearby date or another city pair.</p><a class="btn btn-primary" href="#/">New search</a></div>}
+      @else if (!s.visible().length) {<div class="card empty" ybEmpty icon="search"><h3>No buses match your filters</h3><p>Try removing a filter or increasing the price range.</p><button class="btn btn-outline" (click)="s.clear()">Clear filters</button></div>}
+      @else {@for (x of s.visible(); track x.id) {<article class="card bus-card" ybBusCard [trip]="x" (viewSeats)="seats($event)"></article>}}
+    </div></div>
+  </div>
+</div>

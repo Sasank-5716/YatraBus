@@ -1,0 +1,12 @@
+@let x = trip();
+<div class="bus-main">
+  <div><div class="op-name">{{ x.operator.name }}</div><div class="muted small">{{ x.bus.type }}</div>
+    <div class="row" style="margin-top:8px;gap:8px"><span class="rating {{ ratingCls(x.operator.rating) }}" [attr.aria-label]="'Rated ' + x.operator.rating + ' out of 5'"><svg ybIcon="star2"></svg> {{ x.operator.rating.toFixed(1) }}</span><span class="muted tiny">{{ x.operator.reviews.toLocaleString() }} ratings</span></div>
+    <div class="amen">@if (x.bus.ac) {<span class="tip" data-tip="Air conditioned"><svg ybIcon="ac"></svg>AC</span>}@for (a of x.bus.amenities; track a) {<span class="tip" [attr.data-tip]="(AMEN[a] || a) + ' included'">@if (hasIcon(a)) {<svg [ybIcon]="a"></svg>}{{ AMEN[a] || a }}</span>}</div></div>
+  <div class="times"><div><div class="t">{{ x.departure }}</div><div class="city">{{ x.boarding[0].name }}</div></div><div class="line"><span>{{ x.durationMins | dur }}</span></div><div style="text-align:right"><div class="t">{{ x.arrival }}@if (x.nextDay) {<sup class="tiny muted">+1</sup>}</div><div class="city">{{ x.dropping[x.dropping.length - 1].name }}</div></div></div>
+  <div class="price-col"><div><div class="from">Starts from</div><div class="amt">{{ x.minFare | npr }}</div></div>
+    <div style="text-align:right"><div class="seats-left" [class.low]="x.seatsLeft < 8">{{ x.departed ? 'Departed' : x.seatsLeft ? x.seatsLeft + ' seats left' : 'Sold out' }}</div>
+    <button class="btn btn-primary" style="margin-top:8px" [attr.data-sched]="x.id" [disabled]="x.departed || !x.seatsLeft" (click)="viewSeats.emit(x)">View seats</button></div></div>
+</div>
+<div class="bus-more"><div class="bm-inner"><div><span class="label">Boarding</span>@for (b of x.boarding; track b.name) {<div class="bm-pt"><b>{{ b.time }}</b> {{ b.name }}</div>}</div><div><span class="label">Dropping</span>@for (b of x.dropping; track b.name) {<div class="bm-pt"><b>{{ b.time }}</b> {{ b.name }}</div>}</div><div><span class="label">Policies</span><div class="bm-pt">90% refund 48h+ before</div><div class="bm-pt">{{ x.bus.layout === 'sleeper' ? 'Lower berths +Rs. 150' : 'Front rows may cost more' }}</div><div class="bm-pt">Ladies seats marked in pink</div></div></div></div>
+<div class="bus-foot"><span><svg ybIcon="flag"></svg> {{ x.boarding.length }} boarding points</span><span><svg ybIcon="pin"></svg> {{ x.dropping.length }} drop points</span><span><svg ybIcon="idcard"></svg> {{ x.bus.number }}</span><span>{{ x.totalSeats }} {{ x.bus.layout === 'sleeper' ? 'berths' : 'seats' }}</span></div>

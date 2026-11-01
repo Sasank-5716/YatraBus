@@ -1,0 +1,1 @@
+import{Cc as a,J as e,O as o}from"./chunk-AMIM7SBL.js";var p=class i{api=o(a);trip(t,r,n=""){return this.api.get(`/api/trip/${t}`,{date:r,hold:n})}hold(t){return this.api.post("/api/hold",t)}static \u0275fac=function(r){return new(r||i)};static \u0275prov=e({token:i,factory:i.\u0275fac,providedIn:"root"})};export{p as a};
